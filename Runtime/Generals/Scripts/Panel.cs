@@ -2,10 +2,8 @@ using UnityEngine;
 
 namespace Services.UI
 {
-    public class Panel<Inherister> : MonoBehaviour where Inherister : Panel<Inherister>
+    public class Panel : MonoBehaviour
     {
-        public static Inherister Instance { get; private set; }
-
         [SerializeField] private GameObject root;
         [Space]
         [SerializeField] private PanelTransition transition;
@@ -15,27 +13,12 @@ namespace Services.UI
         /// </summary>
         protected virtual void Start()
         {
-            transition.Initialize(Eanble, Disable);
+            transition.Initialize(this);
 
             if (root)
                 return;
 
             root = gameObject;
-        }
-
-        /// <summary>
-        /// Set this panel to instance
-        /// </summary>
-        /// <param name="inheriter"></param>
-        protected void SetInstance(Inherister inheriter, PanelReplacementType replacementType = PanelReplacementType.Noramal)
-        {
-            if (inheriter == null)
-                return;
-
-            if(replacementType == PanelReplacementType.DontroyPrivious && Instance != null)
-                Destroy(Instance.gameObject);
-
-            Instance = inheriter;
         }
 
         /// <summary>
@@ -45,7 +28,7 @@ namespace Services.UI
         {
             if (!transition.IsInitialized)
             {
-                Eanble();
+                Enable();
                 return;
             }
 
@@ -66,12 +49,23 @@ namespace Services.UI
             transition.FadeOut();
         }
 
-        private void Eanble()
+        /// <summary>
+        /// Nagative switch open or close when invoke.
+        /// </summary>
+        public void ShowNagative()
+        {
+            if (root.activeSelf)
+                Close();
+            else
+                Open();
+        }
+
+        internal void Enable()
         {
             root.SetActive(true);
         }
 
-        private void Disable()
+        internal void Disable()
         {
             root.SetActive(false);
         }

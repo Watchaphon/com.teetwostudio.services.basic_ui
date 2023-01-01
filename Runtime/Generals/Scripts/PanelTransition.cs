@@ -12,18 +12,24 @@ namespace Services.UI
         [SerializeField] private GenericAnimationHandle fadeIn;
         [SerializeField] private GenericAnimationHandle fadeOut;
 
+        public bool IsProcessing { get; private set; }
+
         public bool IsInitialized { get; private set; }
 
-        public void Initialize(EventAction OnFadeInComplete, EventAction onFadeOutComplete)
+        private Panel _authorPanel;
+
+        public void Initialize(Panel panel)
         {
             if (!animation)
                 return;
 
+            _authorPanel = panel;
+
             fadeIn.Initialize(animation);
             fadeOut.Initialize(animation);
 
-            fadeIn.SetListener(null, OnFadeInComplete);
-            fadeOut.SetListener(null, OnFadeInComplete);
+            fadeIn.SetListener(OnFadeInStart, OnFadeInCompelte);
+            fadeOut.SetListener(OnFadeOutStart, OnFadeOutComplete);
 
             IsInitialized = true;
         }
@@ -36,6 +42,9 @@ namespace Services.UI
                 return;
             }
 
+            if (IsProcessing)
+                return;
+
             fadeIn.Play();
         }
 
@@ -47,7 +56,39 @@ namespace Services.UI
                 return;
             }
 
+            if (IsProcessing)
+                return;
+
             fadeOut.Play();
         }
+
+        #region FadeIn Event
+        private void OnFadeInStart()
+        {
+            IsProcessing = true;
+
+            _authorPanel.Enable();
+        }
+
+        private void OnFadeInCompelte()
+        {
+            IsProcessing = false;
+        }
+
+        #endregion
+
+        #region FadeOut Event
+        private void OnFadeOutStart()
+        {
+            IsProcessing = true;
+        }
+
+        private void OnFadeOutComplete()
+        {
+            IsProcessing = false;
+
+            _authorPanel.Disable();
+        }
+        #endregion
     }
 }
