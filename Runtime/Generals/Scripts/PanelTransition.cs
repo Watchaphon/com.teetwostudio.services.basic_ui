@@ -1,4 +1,3 @@
-using Services.EventsSystem;
 using System;
 using UnityEngine;
 
@@ -11,6 +10,16 @@ namespace Services.UI
         [Space]
         [SerializeField] private GenericAnimationHandle fadeIn;
         [SerializeField] private GenericAnimationHandle fadeOut;
+
+        public float FadeInTime
+        {
+            get => fadeIn.Time;
+        }
+
+        public float FadeOutTime
+        {
+            get => fadeOut.Time;
+        }
 
         public bool IsProcessing { get; private set; }
 
