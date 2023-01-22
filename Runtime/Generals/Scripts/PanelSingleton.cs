@@ -30,7 +30,7 @@ namespace Services.UI
             if (_instance)
                 return;
 
-            Inherister[] inheristers = FindObjectsOfType<Inherister>();
+            Inherister[] inheristers = FindObjectsOfType<Inherister>(true);
 
             if (inheristers == null)
             {
