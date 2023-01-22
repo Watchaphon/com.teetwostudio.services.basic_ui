@@ -35,7 +35,7 @@ namespace Services.UI
             if (inheristers == null)
             {
                 Debug.LogError("The type of <{nameof(Inherister)}> not arriv or found.");
-                return null;
+                return;
             }
 
             if (inheristers.Length > 1)
