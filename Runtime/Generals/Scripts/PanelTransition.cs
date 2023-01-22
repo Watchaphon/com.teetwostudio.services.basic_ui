@@ -29,6 +29,9 @@ namespace Services.UI
 
         public void Initialize(Panel panel)
         {
+            if (IsInitialized)
+                return;
+
             if (!animation)
                 return;
 

@@ -13,12 +13,24 @@ namespace Services.UI
             get => transition;
         }
 
+        public bool IsInitialized { get; private set; } = false;
+
         /// <summary>
         /// Intialize this panel and transition (transition can initable when property 'animation' is not null or empty only).
         /// </summary>
         protected virtual void Start()
         {
+            Initialize();
+        }
+
+        public virtual void Initialize()
+        {
+            if (IsInitialized)
+                return;
+
             transition.Initialize(this);
+
+            IsInitialized = true;
 
             if (root)
                 return;
