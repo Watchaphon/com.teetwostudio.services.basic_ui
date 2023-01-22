@@ -1,17 +1,37 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace Services.UI
 {
     public abstract class PanelSingleton<Inherister> : Panel where Inherister : Panel
     {
-        public static Inherister Instance { get; private set; }
-
-        protected override void Start()
+        public static Inherister Instance
         {
-            base.Start();
+            get
+            {
+                if (!_instance)
+                {
+                    Inherister[] inheristers = FindObjectsOfType<Inherister>();
 
+                    if(inheristers == null)
+                    {
+                        Debug.LogError("The type of <{nameof(Inherister)}> not arriv or found.");
+                        return null;
+                    }
+
+                    if (inheristers.Length > 1)
+                        Debug.LogWarning($"The type of <{nameof(Inherister)}> arrived more that one.");
+
+                    _instance = inheristers[0];
+                }
+
+                return _instance;
+            }
+        }
+
+        private static Inherister _instance;
+
+        protected virtual void Awake()
+        {
             SetInstance(GetComponent<Inherister>());
         }
 
@@ -19,15 +39,24 @@ namespace Services.UI
         /// Set this panel to instance
         /// </summary>
         /// <param name="inheriter"></param>
-        protected void SetInstance(Inherister inheriter, PanelReplacementType replacementType = PanelReplacementType.Noramal)
+        protected void SetInstance(Inherister inheriter, SigletonPlacementType replacementType = SigletonPlacementType.Noramal)
         {
             if (inheriter == null)
                 return;
 
-            if (replacementType == PanelReplacementType.DontroyPrivious && Instance != null)
-                Destroy(Instance.gameObject);
+            switch (replacementType)
+            {
+                case SigletonPlacementType.Noramal:
+                    if (_instance)
+                        return;
+                    break;
+                case SigletonPlacementType.DontroyPrivious:
+                    if (_instance)
+                        Destroy(Instance.gameObject);
+                    break;
+            }
 
-            Instance = inheriter;
+            _instance = inheriter;
         }
     }
 }
