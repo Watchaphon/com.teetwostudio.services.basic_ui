@@ -8,6 +8,11 @@ namespace Services.UI
         [Space]
         [SerializeField] private PanelTransition transition;
 
+        public PanelTransition Transition
+        {
+            get => transition;
+        }
+
         /// <summary>
         /// Intialize this panel and transition (transition can initable when property 'animation' is not null or empty only).
         /// </summary>
