@@ -1,15 +1,21 @@
+using Services.Utility.Core;
 using UnityEngine;
 
 namespace Services.UI
 {
     public abstract class PanelSingleton<Inherister> : Panel where Inherister : Panel
     {
+        /// <summary>
+        /// The access of instance finder type default is 'FindExited'.
+        /// </summary>
+        protected static SingleonAccessType AccessType { get; set; } = SingleonAccessType.FindExited;
+
         public static Inherister Instance
         {
             get
             {
                 if (!_instance)
-                    SetInstance();
+                    _instance = SingletonHelper.FindInstance(_instance, AccessType);
 
                 return _instance;
             }
@@ -19,53 +25,16 @@ namespace Services.UI
 
         protected virtual void Awake()
         {
-            SetInstance(GetComponent<Inherister>());
+            _instance = SingletonHelper.GetInstance(gameObject, _instance);
         }
 
         /// <summary>
-        /// Force set global instance.
+        /// Check the status of this instance static object can't check null form Instance property because Instance property away find the validable access can check only this function.
         /// </summary>
-        public static void SetInstance()
+        /// <returns>Ture if 'Instance' not be null</returns>
+        public bool IsInstanceValidable()
         {
-            if (_instance)
-                return;
-
-            Inherister[] inheristers = FindObjectsOfType<Inherister>(true);
-
-            if (inheristers == null)
-            {
-                Debug.LogError("The type of <{nameof(Inherister)}> not arriv or found.");
-                return;
-            }
-
-            if (inheristers.Length > 1)
-                Debug.LogWarning($"The type of <{nameof(Inherister)}> arrived more that one.");
-
-            _instance = inheristers[0];
-        }
-
-        /// <summary>
-        /// Set this panel to instance
-        /// </summary>
-        /// <param name="inheriter"></param>
-        protected void SetInstance(Inherister inheriter, SigletonPlacementType replacementType = SigletonPlacementType.Noramal)
-        {
-            if (inheriter == null)
-                return;
-
-            switch (replacementType)
-            {
-                case SigletonPlacementType.Noramal:
-                    if (_instance)
-                        return;
-                    break;
-                case SigletonPlacementType.DontroyPrivious:
-                    if (_instance)
-                        Destroy(Instance.gameObject);
-                    break;
-            }
-
-            _instance = inheriter;
+            return _instance;
         }
     }
 }
