@@ -5,17 +5,12 @@ namespace Services.UI
 {
     public abstract class PanelSingleton<Inherister> : Panel where Inherister : Panel
     {
-        /// <summary>
-        /// The access of instance finder type default is 'FindExited'.
-        /// </summary>
-        protected static SingleonAccessType AccessType { get; set; } = SingleonAccessType.FindExited;
-
         public static Inherister Instance
         {
             get
             {
                 if (!_instance)
-                    _instance = SingletonHelper.FindInstance(_instance, AccessType);
+                    _instance = SingletonHelper.FindInstance(_instance);
 
                 return _instance;
             }
