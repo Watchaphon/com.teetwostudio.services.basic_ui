@@ -2,13 +2,13 @@ using UnityEngine;
 
 namespace Services.UI
 {
-    public class Panel : MonoBehaviour
+    public class Panel : MonoBehaviour,ITransitionHandle
     {
         [SerializeField] private GameObject root;
         [Space]
-        [SerializeField] private PanelTransition transition;
+        [SerializeField] private GenericTransition transition;
 
-        public PanelTransition Transition
+        public GenericTransition Transition
         {
             get => transition;
         }
@@ -77,14 +77,36 @@ namespace Services.UI
                 Open();
         }
 
-        internal void Enable()
+        private void Enable()
         {
             root.SetActive(true);
         }
 
-        internal void Disable()
+        private void Disable()
         {
             root.SetActive(false);
         }
+
+        #region Transition_Event
+        public void OnFadeInBegin()
+        {
+            Enable();
+        }
+
+        public void OnFadeInComplete()
+        {
+            //Do Nothing
+        }
+
+        public void OnFadeOutBegin()
+        {
+            //Do Nothing
+        }
+
+        public void OnFadeOutComplete()
+        {
+            Disable();
+        }
+        #endregion
     }
 }
